@@ -23,7 +23,7 @@ static class LinkFinder
         
         // Find all matches in file.
         MatchCollection m1 = Regex.Matches(file, @"(<a.*?>.*?</a>)",RegexOptions.Singleline);
-
+        
        
         
         // Loop over each match.
@@ -33,23 +33,25 @@ static class LinkFinder
             //Console.WriteLine("hello and hi");
             string value = m.Groups[1].Value;
             LinkItem i = new LinkItem();
-
+            Console.WriteLine("\t"+value);
             
             // Get href attribute.
-            Match m2 = Regex.Match(value, @"href=\""(.*?)\""",
-            RegexOptions.Singleline);
+            Match m2 = Regex.Match(value, @"href=\""(.*?)\""",RegexOptions.Singleline);
+            
+
             if (m2.Success)
             {
                 i.Href = m2.Groups[1].Value;
-                //Console.WriteLine("hello and hi");
+                Console.WriteLine("\t\t"+ i);
             }
 
             
             // Remove inner tags from text.
             string t = Regex.Replace(value, @"\s*<.*?>\s*", "",RegexOptions.Singleline);
             i.Text = t;
-            //Console.WriteLine("hello and hi");
+            Console.WriteLine(t);
             list.Add(i);
+            
         }
         return list;
     }
@@ -59,46 +61,17 @@ static class LinkFinder
        
         
         WebClient w = new WebClient();
-        string s = w.DownloadString("http://www.gsmarena.com/");
+        string[] a = { "http://www.phonearena.com/", "http://www.gsmarena.com/", "http://www.whatmobile.com.pk/" };
 
-        
-
-        
-        foreach (LinkItem i in LinkFinder.Find(s))
+        for (int i = 0; i < 3; i++)
         {
-            //Console.WriteLine("hello and hi");
-           // Debug.WriteLine(i);
-            Console.WriteLine(i);
+            string s = w.DownloadString(a[i]);
+            LinkFinder.Find(s);
+            Console.ReadLine();
+
         }
 
-        Console.ReadLine();
-
-        WebClient w2 = new WebClient();
-        string s2 = w2.DownloadString("http://www.phonearena.com/");
-
-
-
-        foreach (LinkItem i in LinkFinder.Find(s2))
-        {
-            //Console.WriteLine("hello and hi");
-            // Debug.WriteLine(i);
-            Console.WriteLine(i);
-        }
-        Console.ReadLine();
-
-
-        WebClient w3 = new WebClient();
-        string s3 = w3.DownloadString("http://www.whatmobile.com.pk/");
-
-
-
-        
-        foreach (LinkItem i in LinkFinder.Find(s3))
-        {
-            //Console.WriteLine("hello and hi");
-            // Debug.WriteLine(i);
-            Console.WriteLine(i);
-        }
-        Console.ReadLine();
+       
+       
     }
 }
